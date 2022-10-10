@@ -126,6 +126,7 @@ class Client:
             url=f"{API_URL}/repos/{self._repos_name}/pulls?state=open",
             headers={"Authorization": f"token {self._token}"},
             timeout=1)
+        print(self._token)
         data = response.json()
         print(data)
         # Match branch_name with head"s ref
