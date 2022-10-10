@@ -8,6 +8,7 @@ set -e
 
 TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/." && pwd -P)"
 GITHUB_API_DIR=${TOP_DIR}/scripts/github_api
+READABILITY_DIR=${TOP_DIR}/scripts/readability
 GITHUB_UTILS_PATH=${GITHUB_API_DIR}/github_utils.py
 
 source ${TOP_DIR}/scripts/autra.bashrc
@@ -101,7 +102,7 @@ function parse_arguments() {
 
 function code_format() {
     echo "Code format started."
-    bash ./scripts/readability/diff_format.sh
+    bash $READABILITY_DIR/diff_format.sh
     echo "Code format finished."
 
     if [[ -n $(git status --short) ]]; then
