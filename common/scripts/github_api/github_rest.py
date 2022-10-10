@@ -59,9 +59,7 @@ class Client:
         return token
 
     def _get_url(self, api_name, suffix):
-        url = f"{API_URL}/{api_name}/{self._repos_name}/{suffix}"
-        print(url)
-        return url
+        return f"{API_URL}/{api_name}/{self._repos_name}/{suffix}"
 
     def _mark_status(self,
                      commit_sha,
