@@ -21,25 +21,25 @@ CHROME_PATH = "/usr/bin/google-chrome %s" if platform.system() == "Linux" \
     else "open -a /Applications/Google\\ Chrome.app %s"
 
 
-def _get_latest_commit_sha(client: Client) -> str:
-    return client.check_output(["git", "rev-parse",
-                                "HEAD"]).decode("ascii").strip()
+def _get_latest_commit_sha() -> str:
+    return subprocess.check_output(["git", "rev-parse",
+                                    "HEAD"]).decode("ascii").strip()
 
 
 # Set index to 0 will get HEAD.
-def _get_commit_sha(client: Client, index: int) -> str:
-    return client.check_output(["git", "rev-parse",
-                                "HEAD~" + str(index)]).decode("ascii").strip()
+def _get_commit_sha(index: int) -> str:
+    return subprocess.check_output(["git", "rev-parse", "HEAD~" + str(index)
+                                    ]).decode("ascii").strip()
 
 
-def _get_current_branch_name(client: Client) -> str:
-    return client.check_output(["git", "branch",
-                                "--show-current"]).decode("ascii").strip()
+def _get_current_branch_name() -> str:
+    return subprocess.check_output(["git", "branch",
+                                    "--show-current"]).decode("ascii").strip()
 
 
-def _get_base_commit_sha(client: Client, base_branch="origin/master") -> str:
-    return client.check_output(["git", "merge-base", base_branch,
-                                "HEAD"]).decode("ascii").strip()
+def _get_base_commit_sha(base_branch="origin/master") -> str:
+    return subprocess.check_output(["git", "merge-base", base_branch,
+                                    "HEAD"]).decode("ascii").strip()
 
 
 # Get diff file list between current branch and base branch.
@@ -61,8 +61,8 @@ def _mark_unit_test_success(client: Client, commit_sha):
     )
 
 
-def _push_branch(client: Client):
-    branch_name = _get_current_branch_name(client)
+def _push_branch():
+    branch_name = _get_current_branch_name()
     subprocess.check_output(
         ["git", "push", "-f", "--set-upstream", "origin", branch_name])
 
@@ -71,9 +71,9 @@ def push_and_create_pr(repos_name: str, browser: bool, mark_ut_success: bool,
                        mark_format_check_success: bool) -> None:
     """ main course: push and create pr """
     client = Client(repos_name)
-    _push_branch(client)
-    commit_sha = _get_latest_commit_sha(client)
-    current_branch_name = _get_current_branch_name(client)
+    _push_branch()
+    commit_sha = _get_latest_commit_sha()
+    current_branch_name = _get_current_branch_name()
     pull_request = client.get_pull_request(branch_name=current_branch_name)
     # Pass unit test
     if mark_ut_success:
