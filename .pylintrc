@@ -175,8 +175,8 @@ max-line-length=120 # 稍微放开一下
 
 # String used as indentation unit. This is usually " " (4 spaces) or "\t" (1
 # tab).
-indent-string='  ' # 这边 python 统一用两个缩进，下同
-indent-after-paren=2
+indent-string='    '
+indent-after-paren=4
 
 
 [TYPECHECK]
