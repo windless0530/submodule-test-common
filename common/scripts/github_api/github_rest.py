@@ -85,6 +85,7 @@ class Client:
                             check_res=True,
                             target_url=None):
         """ mark git status as success """
+        print("mark sha success: %s", commit_sha)
         response = self._mark_status(commit_sha, status_name, "success",
                                      description, target_url)
         if check_res:
