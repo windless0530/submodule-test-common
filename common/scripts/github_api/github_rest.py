@@ -126,11 +126,11 @@ class Client:
             url=f"{API_URL}/repos/{self._repos_name}/pulls?state=open",
             headers={"Authorization": f"token {self._token}"},
             timeout=1)
-        print(self._token)
         data = response.json()
-        print(data)
         # Match branch_name with head"s ref
         for pull_request in data:
+            if not isinstance(pull_request, dict):
+                continue
             pull_request_head_ref = pull_request["head"]["ref"]
             if pull_request_head_ref == branch_name:
                 return pull_request
