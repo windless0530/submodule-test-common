@@ -39,12 +39,10 @@ class Client:
     def _get_token(self):
         token = os.environ.get("GITHUB_TOKEN")
         if token:
-            print("1")
             return token
 
         if os.path.exists(GITHUB_TOKEN_PATH):
             with open(GITHUB_TOKEN_PATH, "r", encoding="utf-8") as fin:
-                print("2")
                 return fin.read().strip()
 
         print(
@@ -61,7 +59,9 @@ class Client:
         return token
 
     def _get_url(self, api_name, suffix):
-        return f"{API_URL}/{api_name}/{self._repos_name}/{suffix}"
+        url = f"{API_URL}/{api_name}/{self._repos_name}/{suffix}"
+        print(f"URL is '{url}'")
+        return url
 
     def _mark_status(self,
                      commit_sha,
