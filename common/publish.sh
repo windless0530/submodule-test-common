@@ -98,7 +98,7 @@ function main() {
     if [[ "${SKIP_FORMAT_CHECK}" == 0 ]]; then
         format_check
     fi
-    repos_name=$(git remote show origin | grep "Fetch URL" | awk -F'[:/.]' '{print $(NF-1)}')
+    repos_name=$(git remote show origin | grep "Fetch URL" | awk -F'[:.]' '{print $(NF-1)}')
     python3 ${GITHUB_UTILS_PATH} --repos-name=$repos_name \
         --command publish --browser=$ENABLE_BROWSER --mark-ut-success=0 \
         --mark-format-check-success=$((1-SKIP_FORMAT_CHECK))
