@@ -99,7 +99,7 @@ function main() {
         format_check
     fi
     python3 ${GITHUB_UTILS_PATH} \
-        --command publish --browser=$ENABLE_BROWSER --mark-ut-success=$((1-SKIP_BUILD)) \
+        --command publish --browser=$ENABLE_BROWSER --mark-ut-success=0 \
         --mark-format-check-success=$((1-SKIP_FORMAT_CHECK))
 }
 
