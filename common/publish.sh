@@ -9,16 +9,14 @@ set -e
 TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/." && pwd -P)"
 GITHUB_API_DIR=${TOP_DIR}/scripts/github_api
 READABILITY_DIR=${TOP_DIR}/scripts/readability
+BUILDTOOLS_DIR=${TOP_DIR}/buildtools
 GITHUB_UTILS_PATH=${GITHUB_API_DIR}/github_utils.py
 
 source ${TOP_DIR}/scripts/autra.bashrc
 ENABLE_BROWSER="${ENABLE_BROWSER:-0}"
-BUILD_FRONTEND="${BUILD_FRONTEND:-0}"
-DEV_CONTAINER="autra_dev_${USER}"
 
 SKIP_CODE_FORMAT=0
 SKIP_FORMAT_CHECK=0
-SKIP_BUILD=0
 
 function show_usage() {
     cat <<EOF
@@ -41,32 +39,6 @@ function check_workspace_is_clean() {
     fi
 }
 
-function frontend_update() {
-    if [[ "$BUILD_FRONTEND" == 1 ]]; then
-        # cleanup bundle.js
-        rm -f ${TOP_DIR}/modules/dreamview/frontend/dist/*.bundle.js
-        rm -f ${TOP_DIR}/modules/dreamview/frontend/dist/*.bundle.js.map
-        rm -f ${TOP_DIR}/modules/dreamview/frontend/dist/*.map
-        echo "All existing JS dists are deleted"
-        # build frontend artifacts in container
-        docker exec \
-            -u "${USER}" \
-            "${DEV_CONTAINER}" \
-            "bash" "-c" "source ~/.bash_aliases && ./autra.sh build_fe"
-        echo "Frontend resources are built"
-        if [[ -n $(git status --short) ]]; then
-            # git commit latest change
-            git add --all
-            git commit -m "feat: include frontend change"
-            echo "Frontend change is commited"
-        else
-            echo "No frontend change is detected"
-        fi
-    else
-        echo "Skip frontend update"
-    fi
-}
-
 function parse_arguments() {
     while [ "$#" -gt 0 ]; do
         case "$1" in
@@ -82,10 +54,6 @@ function parse_arguments() {
             --skip-format-check)
                 shift
                 SKIP_FORMAT_CHECK=1
-                ;;
-            --skip-build)
-                shift
-                SKIP_BUILD=1
                 ;;
             --)
                 shift
@@ -116,26 +84,19 @@ function code_format() {
 
 function format_check() {
     echo "Format check started."
-    docker exec \
-        -u "${USER}" \
-        "${DEV_CONTAINER}" \
-        "bash" "-c" "source ~/.bash_aliases && ./buildtools/autra_lint.sh"
+    bash $BUILDTOOLS_DIR/autra_lint.sh
     echo "Format check finished."
 }
 
 # TODO(xiaopeng): Add a python script to wrap git, replace this publish script.
 function main() {
     parse_arguments "$@"
-    check_workspace_is_clean
+    # check_workspace_is_clean
     if [[ "${SKIP_CODE_FORMAT}" == 0 ]]; then
         code_format
     fi
     if [[ "${SKIP_FORMAT_CHECK}" == 0 ]]; then
         format_check
-    fi
-    if [[ "${SKIP_BUILD}" == 0 ]]; then
-        frontend_update
-        bash ./ci/scripts/unit_test.sh
     fi
     python3 ${GITHUB_UTILS_PATH} \
         --command publish --browser=$ENABLE_BROWSER --mark-ut-success=$((1-SKIP_BUILD)) \
