@@ -39,10 +39,12 @@ class Client:
     def _get_token(self):
         token = os.environ.get("GITHUB_TOKEN")
         if token:
+            print("1")
             return token
 
         if os.path.exists(GITHUB_TOKEN_PATH):
             with open(GITHUB_TOKEN_PATH, "r", encoding="utf-8") as fin:
+                print("2")
                 return fin.read().strip()
 
         print(
@@ -85,7 +87,6 @@ class Client:
                             check_res=True,
                             target_url=None):
         """ mark git status as success """
-        print("mark sha success: %s", commit_sha)
         response = self._mark_status(commit_sha, status_name, "success",
                                      description, target_url)
         if check_res:
