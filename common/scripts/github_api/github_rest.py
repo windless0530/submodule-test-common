@@ -127,9 +127,9 @@ class Client:
             headers={"Authorization": f"token {self._token}"},
             timeout=1)
         data = response.json()
+        print(data)
         # Match branch_name with head"s ref
         for pull_request in data:
-            print(pull_request)
             pull_request_head_ref = pull_request["head"]["ref"]
             if pull_request_head_ref == branch_name:
                 return pull_request
