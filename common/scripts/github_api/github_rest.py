@@ -76,6 +76,7 @@ class Client:
         }
         if target_url:
             body["target_url"] = target_url
+        print(body)
         return self._session.post(url=self._get_url("repos",
                                                     f"statuses/{commit_sha}"),
                                   json=body)
