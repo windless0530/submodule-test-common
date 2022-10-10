@@ -60,6 +60,7 @@ class Client:
 
     def _get_url(self, api_name, suffix):
         url = f"{API_URL}/{api_name}/{self._repos_name}/{suffix}"
+        print(url)
         return url
 
     def _mark_status(self,
@@ -75,7 +76,6 @@ class Client:
         }
         if target_url:
             body["target_url"] = target_url
-        print(body)
         return self._session.post(url=self._get_url("repos",
                                                     f"statuses/{commit_sha}"),
                                   json=body)
