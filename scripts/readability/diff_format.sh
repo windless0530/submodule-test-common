@@ -4,6 +4,8 @@
 # Copyright 2021 AutraTech. All Rights Reserved.
 ################################################
 
+# add local
+
 set -e
 
 CPP_FILE_SUFFIX="c cc cpp cxx c++ C h hh hpp hxx inc"
